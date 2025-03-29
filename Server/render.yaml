@@ -3,7 +3,7 @@ services:
     name: django-todo-backend
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py migrate"
-    startCommand: "gunicorn your_project_name.wsgi:application"
+    startCommand: "gunicorn todo.wsgi:application"
     envVars:
       - key: SECRET_KEY
         value: your_secret_key
