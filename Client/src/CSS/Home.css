@@ -1,0 +1,107 @@
+.home-main{
+    height: 100vh;
+    display: flex;
+   
+}
+
+.sidenavbar{
+    width: 18rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-right: 2px solid #6898c25a;
+    padding: 2rem 0rem;
+    gap: 2rem;
+}
+
+.sidenav-logo h2{
+    color: black;
+    font-size: 1.5rem;
+    width: 100%;
+    font-weight: 600;
+    font-family: 'poppins';
+    margin-right: 5rem;
+}
+
+.sidenav-links, .sidenav-btns{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 2rem;
+    margin-top: -8rem;
+    padding: 1.5rem 0rem;
+}
+
+.sidenav-links button, .sidenav-btns button {
+    border: none;
+    background-color: transparent;
+    color: #9fa3a7; 
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-left: 4rem;
+    gap: 1rem;
+    transition: color 0.3s ease; 
+}
+
+.sidenav-links button:hover, .sidenav-btns button:hover {
+    color: #050a0f; 
+}
+
+.sidenav-links .active-link {
+    color: #050a0f; 
+    font-weight: 600; 
+    border-right: 5px solid #329C89;
+}
+
+.home-content{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+}
+
+.content-nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.searchbar-container{
+    position: relative;
+    display: flex;
+}
+
+.searchbar-container input{
+    padding: 0.5rem 1rem;
+    padding-left: 2.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+}
+
+.search-icon{
+    position: absolute;
+    left: 0.5rem;  
+    top: 0.5rem;
+    transform: translate(-5%, -5%);
+    color: #b2b4b6ae ;
+}
+
+.user-info{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.user-info p{
+    font-family: 'poppins';
+}
+
+.user-info img{
+    width: 3rem;
+    border-radius: 50%;
+}

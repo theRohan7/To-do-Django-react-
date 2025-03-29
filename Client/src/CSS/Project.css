@@ -1,0 +1,84 @@
+.project-main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.project-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.project-header h1{
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #050a0f;
+    font-family: poppins;
+}
+
+.project-header button{
+    background-color: transparent;
+    border: none;
+    color: #606366;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.tasks-section{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1rem;
+}
+
+.task-section{
+    width: 32%;
+    min-height: 30rem;
+    max-height: 30rem;
+    overflow-y: auto;
+    background-color: #F5F9F9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem;
+}
+
+.section-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.section-header h2{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #050a0f;
+    font-family: poppins;
+
+}
+
+.section-header p{
+    color: #329C89;
+    background-color: #ECF3F3;
+    padding: 0.5rem;
+}
+
+.add-task-btn{
+    background-color: transparent;
+    border: none;
+    background-color: #ECF3F3;
+    padding: 0.5rem 1.5rem;
+    color: #329C89;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 100%;
+}

@@ -1,0 +1,134 @@
+.auth-main {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15rem;
+  align-items: center;
+  padding: 5rem;
+}
+
+.auth-form-container {
+  width: 30rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  border: 2px solid #9a9c9e;
+  border-radius: 65px;
+  padding: 4rem 2rem;
+}
+
+.auth-nav {
+  display: flex;
+  align-self: flex-start;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #6898c25a;
+}
+
+.auth-nav button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: transparent;
+  color: #9fa3a7; 
+  font-size: 1.2rem;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.auth-nav button.active-btn {
+  color: #1a3b58; 
+  font-weight: 600; 
+  border-bottom: 3px solid #1a3b58; 
+}
+
+.login-desc {
+  color: #74777a;
+  font-size: 0.8rem;
+  font-family: "poppins";
+}
+
+.login-desc span {
+  color: #1a3b58;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: "poppins";
+}
+
+.auth-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+.auth-form-container form input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 2px solid #b2b4b6ae;
+  border-radius: 5px;
+  font-size: 1.2rem;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #329c89;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+.remember {
+  display: flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.remember label {
+  color: #74777a;
+  font-size: 0.8rem;
+}
+
+.auth-form-container form input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
+}
+
+.error-input {
+  background-color: #ffe6e6;
+  border: 2px solid red;
+}
+
+.error-text {
+  position: absolute;
+  color: red;
+  font-size: 12px;
+  bottom: 30%;
+  left: 0%;
+  transform: translate(-0%, -20%);
+  font-family: 'poppins';
+  text-align: center;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: blue;
+  font-size: 14px;
+}
