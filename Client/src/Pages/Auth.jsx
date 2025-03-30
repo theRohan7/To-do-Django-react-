@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../CSS/auth.css";
 import logo from "../assets/logo.png";
 import { loginUser, registerUser } from "../Services/auth.service.js";
@@ -13,6 +14,9 @@ function Auth() {
   const [errorField, setErrorField] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -73,8 +77,17 @@ function Auth() {
 
       if(loginForm) {
         response = await loginUser({email, password})
+        if(response.status === 200 ){
+           if(remember){
+             localStorage.setItem("token", response.data.access);
+           }
+          navigate("/");
+        }
       } else {
         response = await registerUser({username, email, password})
+        if(response.status === 201){
+          loginForm ? setLoginForm(false) : setLoginForm(true);
+        }
       }
 
       console.log(response);

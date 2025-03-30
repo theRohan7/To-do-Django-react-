@@ -8,7 +8,6 @@ const registerUser = async({ username, email, password }) => {
             email,
             password
         });
-        console.log(response);
         return response;
         
     } catch (error) {
@@ -19,12 +18,10 @@ const registerUser = async({ username, email, password }) => {
 
 const loginUser = async ({ email, password }) => {
     try {
-        const response = await axios.post(`${BACKEND_URL}/login/`, {
+        const response = await axios.post(`${BACKEND_URL}login/`, {
             email,
             password
         })
-
-        console.log(response);
         return response;
         
     } catch (error) {
