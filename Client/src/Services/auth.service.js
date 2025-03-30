@@ -11,7 +11,7 @@ const registerUser = async({ username, email, password }) => {
         return response;
         
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error.response.data.error);
     }
 }
 
@@ -25,7 +25,7 @@ const loginUser = async ({ email, password }) => {
         return response;
         
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error.response.data.error);
     }
 }
 

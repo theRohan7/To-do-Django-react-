@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../CSS/auth.css";
 import logo from "../assets/logo.png";
 import { loginUser, registerUser } from "../Services/auth.service.js";
+import { AuthContext } from "../Contexts/AuthContext.jsx";
 
 function Auth() {
   const [loginForm, setLoginForm] = useState(true);
@@ -16,6 +17,7 @@ function Auth() {
   const [loading, setLoading] = useState(false);
 
 
+  const { setUserDetails } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -81,6 +83,7 @@ function Auth() {
            if(remember){
              localStorage.setItem("token", response.data.access);
            }
+           setUserDetails(response.data.user);
           navigate("/");
         }
       } else {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   CalendarDays,
   ChartColumnBig,
@@ -15,6 +15,8 @@ import Stats from "../Components/Stats.jsx";
 import Chat from "../Components/Chat.jsx";
 import Calendar from "../Components/Calendar.jsx";
 import "../CSS/Home.css";
+import { AuthContext } from "../Contexts/AuthContext.jsx";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const navLinks = [
   {
@@ -45,10 +47,20 @@ const navLinks = [
 ];
 
 function Home() {
+
+
+
   const [activeSection, setActiveSection] = useState(0);
+  const { userDetails } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const ActiveSectionComponent = navLinks[activeSection].component;
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate('/auth'); 
+  };
+  
   return (
     <div className="home-main">
       <div className="sidenavbar">
@@ -69,7 +81,7 @@ function Home() {
         </div>
         <div className="sidenav-btns">
           <button className="sidenav-btn">{<Settings />} Settings</button>
-          <button className="sidenav-btn">{<LogOut />} Log Out</button>
+          <button className="sidenav-btn" onClick={handleLogout} >{<LogOut />} Log Out</button>
         </div>
       </div>
       <div className="home-content">
@@ -83,7 +95,7 @@ function Home() {
             {/* <img src="" alt="sdafas" /> */}
           </div>
           <div className="user-info">
-            <p>Hi John Doe</p>
+            <p>Hi {userDetails.username}</p>
             {/* <img src="" alt="user-img" /> */}
           </div>
         </div>
