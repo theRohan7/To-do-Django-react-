@@ -1,0 +1,100 @@
+.task-card{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    position: relative;
+    cursor: grab;
+  user-select: none;
+}
+
+.task-card:active {
+    cursor: grabbing;
+}
+
+.card-header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #050a0f;
+    font-family: poppins;
+}
+
+.card-header button{
+    background-color: transparent;
+    border: none;
+    color: #329C89;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.card-body{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.card-body p{
+    font-size: 1rem;
+    font-weight: 400;
+    color: #329C89;
+    font-family: poppins;
+}
+
+.card-footer{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    font-family: poppins;
+}
+
+.menu-box{
+    width: 50%;
+    padding: 0.8rem;
+    background-color: #d5dcdb;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    top: 30%;
+    right: 10%;
+    transform: translate(-5%, -10%);
+    /* display: none; */
+}
+
+.menu-box button{
+    background-color: transparent;
+    border: none;
+    color: #000000;
+    gap: 0.5rem;
+    font-family: poppins;
+
+}
+
+.menu-box button:hover{
+    color: white;
+    background-color: rgb(120, 116, 116);
+}
+
+
+.task-card .menu-box.show {
+    display: block;
+  }

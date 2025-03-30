@@ -47,19 +47,25 @@ const navLinks = [
 ];
 
 function Home() {
-
-
-
   const [activeSection, setActiveSection] = useState(0);
-  const { userDetails } = useContext(AuthContext);
+  const {  userDetails, logoutUser, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const ActiveSectionComponent = navLinks[activeSection].component;
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/auth");
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate('/auth'); 
+    logoutUser();
   };
+
+  if (!userDetails) {
+    return <div>Loading user details...</div>;
+  }
   
   return (
     <div className="home-main">

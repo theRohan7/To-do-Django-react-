@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://to-do-django-react.onrender.com/api/";
+export const BACKEND_URL = "https://to-do-vdvy.onrender.com/api/";
