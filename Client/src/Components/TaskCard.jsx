@@ -5,17 +5,18 @@ import { CSS } from "@dnd-kit/utilities";
 import "../CSS/taskCard.css";
 import { TaskContext } from "../Contexts/TaskContext";
 import CreateTaskForm from "./CreateTaskForm";
+import { deleteTask } from "../Services/task.service";
 
-function TaskCard({ taskinfo, id }) {
+function TaskCard({ taskinfo }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({ id: `task-${taskinfo.id}` });
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const { updateDeleteTask, fetchTasks } = useContext(TaskContext);
 
-  const toggleMenu = () => {
+  const toggleMenu = (e) => {
+    e.stopPropagation();
     setShowMenu((prev) => !prev);
-    console.log(showMenu);
   };
 
   const style = {
@@ -38,8 +39,6 @@ function TaskCard({ taskinfo, id }) {
     setShowMenu(false);
   };
 
-  console.log("Rendering TaskCard with ID:", id);
-
   return (
     <>
       {isEditing ? (
@@ -49,13 +48,7 @@ function TaskCard({ taskinfo, id }) {
           initialData={taskinfo}
         />
       ) : (
-        <div
-          ref={setNodeRef}
-          style={style}
-          {...attributes}
-          {...listeners}
-          className="task-card"
-        >
+        <div ref={setNodeRef} style={style} className="task-card">
           <div className="card-header">
             <h3>{taskinfo.title}</h3>
             <button onClick={toggleMenu} className="menu-btn">
@@ -74,7 +67,14 @@ function TaskCard({ taskinfo, id }) {
           <div className="card-body">
             <p>{taskinfo.description}</p>
           </div>
-          <div className="card-footer">By: {taskinfo.owner.username}</div>
+
+          <div className="card-footer">
+            <div className="drag-handle" {...attributes} {...listeners}>
+              ⠿
+            </div>
+            <p> By: {taskinfo.owner.username}</p>
+           
+          </div>
         </div>
       )}
     </>

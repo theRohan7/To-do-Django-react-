@@ -67,58 +67,83 @@ function Projects() {
 
   const handleDragStart = (event) => {
     const { active } = event;
-    console.log("Drag started:", event);
     setActiveId(active.id);
   };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    console.log("Drag ended:", event);
-
     if (!over) return;
 
-    const activeId = active.id;
-    const overId = over.id;
+    console.log("Drag ended:", event);
+    console.log("Over ID:", over.id);
 
-  
-    const taskId = activeId.replace("task-", "");
+    const activeId = active.id.replace("task-", "");
     
-  
-    const taskToMove = tasks.find(task => task.id === taskId);
+    const taskToMove = tasks.find((task) => task.id == activeId);
     if (!taskToMove) return;
 
-  
-    let newCategory = "";
-    
+    let newCategory = taskToMove.category;
 
-    for (const section of taskSections) {
-      if (section.status === overId) {
-        newCategory = section.status;
-        break;
+    if (over.id.startsWith("task-")) {
+      // Dropped on another task - find that task's category
+      const overTaskId = over.id.replace("task-", "");
+      const overTask = tasks.find(task => task.id == overTaskId);
+      
+      if (overTask) {
+        newCategory = overTask.category;
       }
-    }
-    
-
-    if (!newCategory) {
-      for (const section of taskSections) {
-        if (section.tasks.some(task => `task-${task.id}` === overId)) {
-          newCategory = section.status;
-          break;
+    } else {
+      // This might be a section list or other element
+      // Check if it's one of our sections by ID
+      const sectionMatch = taskSections.find(section => section.status === over.id);
+      if (sectionMatch) {
+        newCategory = sectionMatch.status;
+      } else if (over.id.startsWith("list-")) {
+        // If it's a list container with our custom ID format
+        const listCategory = over.id.replace("list-", "");
+        const sectionMatch = taskSections.find(section => section.status === listCategory);
+        if (sectionMatch) {
+          newCategory = sectionMatch.status;
         }
       }
     }
     
-    // If we found a new category, update the task
-    if (newCategory) {
-      // Update the state
-      setTasks(prevTasks => 
-        prevTasks.map(task => 
-          task.id === taskId 
-            ? { ...task, category: newCategory } 
-            : task
+    // Update the task category if changed
+    if (newCategory !== taskToMove.category) {
+      console.log(`Moving task from ${taskToMove.category} to ${newCategory}`);
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.id == activeId ? { ...task, category: newCategory } : task
         )
       );
+    } 
+    // Reorder within the same category
+    else if (over.id.startsWith("task-")) {
+      const overId = over.id.replace("task-", "");
+      const updatedTasks = [...tasks];
+      const fromIndex = updatedTasks.findIndex(task => task.id == activeId);
+      const toIndex = updatedTasks.findIndex(task => task.id == overId);
+      
+      if (fromIndex !== -1 && toIndex !== -1) {
+        setTasks(arrayMove(updatedTasks, fromIndex, toIndex));
+      }
     }
+  };
+
+  const findContainer = (id) => {
+    if (id.startsWith("list-")) {
+      return id.replace("list-", "");
+    }
+    
+    if (id.startsWith("task-")) {
+      const taskId = id.replace("task-", "");
+      const task = tasks.find(t => t.id == taskId);
+      return task ? task.category : null;
+    }
+    
+    // Check if it's directly a section ID
+    const section = taskSections.find(s => s.status === id);
+    return section ? section.status : null;
   };
 
   return (
@@ -138,9 +163,9 @@ function Projects() {
       >
         <div className="tasks-section">
           {taskSections.map((section, idx) => (
-            <div 
-              key={idx} 
-              className="task-section" 
+            <div
+              key={idx}
+              className="task-section"
               id={section.status}
               data-droppable="true"
             >
