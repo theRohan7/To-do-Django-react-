@@ -16,7 +16,8 @@ import Chat from "../Components/Chat.jsx";
 import Calendar from "../Components/Calendar.jsx";
 import "../CSS/Home.css";
 import { AuthContext } from "../Contexts/AuthContext.jsx";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { profileImages } from "../Utils/exports.js";
 
 const navLinks = [
   {
@@ -97,11 +98,13 @@ function Home() {
           </div>
 
           <div className="user-imgs">
-            {/* <img src="" alt="sdafas" /> */}
+            {profileImages.map(userImage => (
+              <img key={userImage.id} src={userImage.image} alt="user-img" />
+            ))}
           </div>
           <div className="user-info">
             <p>Hi {userDetails.username}</p>
-            {/* <img src="" alt="user-img" /> */}
+            <img src="https://res-console.cloudinary.com/rohanscloud/thumbnails/v1/image/upload/v1743343086/RWxsaXBzZV8yN19hcmtkdm8=/preview" alt="user-img" />
           </div>
         </div>
         <div className="content-section">

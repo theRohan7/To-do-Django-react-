@@ -79,7 +79,8 @@ const fetchTaskDetails = async (id) => {
                 Authorization: token,
             }
         })
-        console.log(response);  
+        console.log(response);
+        
         return response.data;
     } catch (error) {
         throw new Error(error.response.data.error);

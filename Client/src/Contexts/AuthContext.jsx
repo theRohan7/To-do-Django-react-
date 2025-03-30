@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
 
 
 
-  const registerUser = async ({ username, email, password }) => {
+  const registerUser = async ({ username, email, password }) => {    
     try {
       const response = await axios.post(`${BACKEND_URL}register/`, {
         username,

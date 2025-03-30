@@ -7,7 +7,7 @@ import { TaskContext } from "../Contexts/TaskContext";
 import CreateTaskForm from "./CreateTaskForm";
 import { deleteTask } from "../Services/task.service";
 
-function TaskCard({ taskinfo }) {
+function TaskCard({ taskinfo, onOpenDetail  }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: `task-${taskinfo.id}` });
   const [showMenu, setShowMenu] = useState(false);
@@ -39,6 +39,11 @@ function TaskCard({ taskinfo }) {
     setShowMenu(false);
   };
 
+  const handleDetail = () => {
+    setShowMenu(false);
+    onOpenDetail(taskinfo); // Open detail view
+  };
+
   return (
     <>
       {isEditing ? (
@@ -60,7 +65,7 @@ function TaskCard({ taskinfo }) {
             <div className="menu-box">
               <button onClick={handleEdit}>Edit</button>
               <button onClick={handleDelete}>Delete</button>
-              <button>Detail</button>
+              <button onClick={handleDetail}>Detail</button>
             </div>
           )}
 
@@ -72,7 +77,7 @@ function TaskCard({ taskinfo }) {
             <div className="drag-handle" {...attributes} {...listeners}>
               ⠿
             </div>
-            <p> By: {taskinfo.owner.username}</p>
+            <p> <img src="https://res-console.cloudinary.com/rohanscloud/thumbnails/v1/image/upload/v1743343086/RWxsaXBzZV8yN19hcmtkdm8=/preview" alt="" /> {taskinfo.owner.username}</p>
            
           </div>
         </div>

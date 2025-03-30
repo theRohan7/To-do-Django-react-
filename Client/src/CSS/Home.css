@@ -91,7 +91,15 @@
     transform: translate(-5%, -5%);
     color: #b2b4b6ae ;
 }
-
+.user-imgs{
+    display: flex;
+    align-items: center;
+    margin-right: 15rem;
+}
+.user-imgs img{
+    width: 2rem;
+    margin-left: -10px;
+}
 .user-info{
     display: flex;
     align-items: center;
@@ -102,6 +110,6 @@
 }
 
 .user-info img{
-    width: 3rem;
+    width: 2.5rem;
     border-radius: 50%;
 }

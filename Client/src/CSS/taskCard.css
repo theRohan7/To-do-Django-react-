@@ -63,6 +63,16 @@
     font-family: poppins;
 }
 
+.card-footer p{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-footer p img{
+    width: 1.5rem;
+}
+
 .drag-handle{
     cursor: grab;
     user-select: none;

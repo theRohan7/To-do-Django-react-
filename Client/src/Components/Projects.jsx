@@ -20,12 +20,14 @@ import "../CSS/Project.css";
 import CreateTaskForm from "./CreateTaskForm";
 import { TaskContext } from "../Contexts/TaskContext";
 import TaskCard from "./TaskCard";
+import TaskDetail from "./TaskDetail";
 
 function Projects() {
   const { tasks, fetchTasks, setTasks } = useContext(TaskContext);
   const [taskForm, setTaskFrom] = useState(false);
   const [currentSection, setCurrentSection] = useState("");
   const [activeId, setActiveId] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
     fetchTasks();
@@ -58,6 +60,14 @@ function Projects() {
     setTaskFrom(false);
   };
 
+  const openTaskDetail = (task) => {
+    setSelectedTask(task);
+  };
+
+  const closeTaskDetail = () => {
+    setSelectedTask(null);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -78,7 +88,7 @@ function Projects() {
     console.log("Over ID:", over.id);
 
     const activeId = active.id.replace("task-", "");
-    
+
     const taskToMove = tasks.find((task) => task.id == activeId);
     if (!taskToMove) return;
 
@@ -87,43 +97,47 @@ function Projects() {
     if (over.id.startsWith("task-")) {
       // Dropped on another task - find that task's category
       const overTaskId = over.id.replace("task-", "");
-      const overTask = tasks.find(task => task.id == overTaskId);
-      
+      const overTask = tasks.find((task) => task.id == overTaskId);
+
       if (overTask) {
         newCategory = overTask.category;
       }
     } else {
       // This might be a section list or other element
       // Check if it's one of our sections by ID
-      const sectionMatch = taskSections.find(section => section.status === over.id);
+      const sectionMatch = taskSections.find(
+        (section) => section.status === over.id
+      );
       if (sectionMatch) {
         newCategory = sectionMatch.status;
       } else if (over.id.startsWith("list-")) {
         // If it's a list container with our custom ID format
         const listCategory = over.id.replace("list-", "");
-        const sectionMatch = taskSections.find(section => section.status === listCategory);
+        const sectionMatch = taskSections.find(
+          (section) => section.status === listCategory
+        );
         if (sectionMatch) {
           newCategory = sectionMatch.status;
         }
       }
     }
-    
+
     // Update the task category if changed
     if (newCategory !== taskToMove.category) {
       console.log(`Moving task from ${taskToMove.category} to ${newCategory}`);
-      setTasks(prevTasks =>
-        prevTasks.map(task =>
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
           task.id == activeId ? { ...task, category: newCategory } : task
         )
       );
-    } 
+    }
     // Reorder within the same category
     else if (over.id.startsWith("task-")) {
       const overId = over.id.replace("task-", "");
       const updatedTasks = [...tasks];
-      const fromIndex = updatedTasks.findIndex(task => task.id == activeId);
-      const toIndex = updatedTasks.findIndex(task => task.id == overId);
-      
+      const fromIndex = updatedTasks.findIndex((task) => task.id == activeId);
+      const toIndex = updatedTasks.findIndex((task) => task.id == overId);
+
       if (fromIndex !== -1 && toIndex !== -1) {
         setTasks(arrayMove(updatedTasks, fromIndex, toIndex));
       }
@@ -134,15 +148,14 @@ function Projects() {
     if (id.startsWith("list-")) {
       return id.replace("list-", "");
     }
-    
+
     if (id.startsWith("task-")) {
       const taskId = id.replace("task-", "");
-      const task = tasks.find(t => t.id == taskId);
+      const task = tasks.find((t) => t.id == taskId);
       return task ? task.category : null;
     }
-    
-    // Check if it's directly a section ID
-    const section = taskSections.find(s => s.status === id);
+
+    const section = taskSections.find((s) => s.status === id);
     return section ? section.status : null;
   };
 
@@ -189,6 +202,7 @@ function Projects() {
                       key={taskinfo.id}
                       taskinfo={taskinfo}
                       id={`task-${taskinfo.id}`}
+                      onOpenDetail={openTaskDetail}
                     />
                   ))}
                   {section.tasks?.length === 0 && (
@@ -205,6 +219,12 @@ function Projects() {
           onClose={closeTaskForm}
           categoryStatus={currentSection}
         />
+      )}
+
+      {selectedTask && (
+        <div className="task-detail-overlay">
+          <TaskDetail taskID={selectedTask.id} onClose={closeTaskDetail} />
+        </div>
       )}
     </div>
   );
