@@ -41,7 +41,7 @@ function TaskCard({ taskinfo, onOpenDetail  }) {
 
   const handleDetail = () => {
     setShowMenu(false);
-    onOpenDetail(taskinfo); // Open detail view
+    onOpenDetail(taskinfo); 
   };
 
   return (
@@ -77,7 +77,7 @@ function TaskCard({ taskinfo, onOpenDetail  }) {
             <div className="drag-handle" {...attributes} {...listeners}>
               ⠿
             </div>
-            <p> <img src="https://res-console.cloudinary.com/rohanscloud/thumbnails/v1/image/upload/v1743343086/RWxsaXBzZV8yN19hcmtkdm8=/preview" alt="" /> {taskinfo.owner.username}</p>
+            <p> <img src="https://res-console.cloudinary.com/rohanscloud/thumbnails/v1/image/upload/v1743343086/RWxsaXBzZV8yN19hcmtkdm8=/preview" alt="" /> {taskinfo?.owner?.username}</p>
            
           </div>
         </div>

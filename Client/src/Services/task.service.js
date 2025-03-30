@@ -24,12 +24,10 @@ const createTask = async ({ title, description, category }) => {
 
 
 const updateTask = async (id, taskDetails) => {
-    console.log(id,taskDetails);
-    
     try {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         const response = await axios.put(`${BACKEND_URL}tasks/${id}/update/`, {
-            taskDetails
+           ...taskDetails
         },{
             headers: {
                 Authorization: token,
