@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, CreateTaskView, UpdateTaskView, DeleteTaskView, TaskListView, TaskDetailView, LoginView,UserDetailView
+from .views import RegisterView, CreateTaskView, UpdateTaskView, DeleteTaskView, TaskListView, TaskDetailView, LoginView,UserDetailView, UpdateCategoryView
 
 app_name = 'todo_app'
 
@@ -12,4 +12,5 @@ urlpatterns = [
     path('tasks/create/', CreateTaskView.as_view(), name='create_task'),
     path('tasks/<int:pk>/update/', UpdateTaskView.as_view(), name='update_task'),
     path('tasks/<int:pk>/delete/', DeleteTaskView.as_view(), name='delete_task'),
+    path('tasks/<int:pk>/category/', UpdateCategoryView.as_view(), name='update_task_category'),
 ]

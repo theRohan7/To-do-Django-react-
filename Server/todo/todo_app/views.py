@@ -75,8 +75,30 @@ class UpdateTaskView(generics.RetrieveUpdateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+    
     def get_queryset(self):
         return Task.objects.filter(owner=self.request.user)
+    
+class UpdateCategoryView(generics.UpdateAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
+    
+    def update(self, request, *args, **kwargs):
+        partial = True
+        instance = self.get_object()
+
+        if 'category' in request.data:
+            serializer = self.get_serializer(instance, data={'category': request.data['category']}, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Category field is required"}, status=status.HTTP_400_BAD_REQUEST)
     
 class DeleteTaskView(generics.DestroyAPIView):
     serializer_class = TaskSerializer
