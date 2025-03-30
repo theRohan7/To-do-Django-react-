@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import "../CSS/auth.css";
 import logo from "../assets/logo.png";
+import { loginUser, registerUser } from "../Services/auth.service.js";
 
 function Auth() {
   const [loginForm, setLoginForm] = useState(true);
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
   const [errorField, setErrorField] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,7 +20,7 @@ function Auth() {
     if (type === "checkbox") {
       setRemember(checked);
     } else {
-      if (name === "name") setName(value);
+      if (name === "name") setUsername(value);
       if (name === "email") setEmail(value);
       if (name === "password") setPassword(value);
 
@@ -33,10 +35,10 @@ function Auth() {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
-    if (!loginForm && !name.trim()) {
+    if (!loginForm && !username.trim()) {
       setError("Name is required");
       setErrorField("name");
       return;
@@ -64,18 +66,23 @@ function Auth() {
 
     setError("");
     setErrorField("");
+    setLoading(true);
 
-    console.log("Form submitted:", {
-      formType: loginForm ? "login" : "signup",
-      name: !loginForm ? name : undefined,
-      email,
-      password,
-      remember,
-    });
+    try {
+      let response;
 
-    if (!loginForm) setName("");
-    setEmail("");
-    setPassword("");
+      if(loginForm) {
+        response = await loginUser({email, password})
+      } else {
+        response = await registerUser({username, email, password})
+      }
+
+      console.log(response);
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,7 +114,7 @@ function Auth() {
               placeholder="Name"
               onChange={handleChange}
               name="name"
-              value={name}
+              value={username}
               className={errorField === "name" ? "error-input" : ""}
             />
           )}

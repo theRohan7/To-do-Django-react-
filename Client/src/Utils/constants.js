@@ -1,0 +1,1 @@
+export const BACKEND_URL = "https://to-do-django-react.onrender.com/api/";
