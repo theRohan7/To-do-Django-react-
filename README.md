@@ -99,5 +99,9 @@ python manage.py test
   nppm run dev
   ```
 
+## Thank You!!
+### Rohan Sahu
+### Mail: therohansahu7@gmail.com
+
 
 
