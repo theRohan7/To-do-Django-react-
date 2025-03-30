@@ -1,12 +1,13 @@
 import { ListFilterPlus } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import '../CSS/Project.css'
+import CreateTaskForm from './CreateTaskForm'
 
 
 const taskSection = [
     {
         title: 'To Do',
-        totalTasks: 0 ,
+        totalTasks: 0  ,
         tasks: []
     },
     {
@@ -21,7 +22,20 @@ const taskSection = [
     },
 ]
 
+
 function Projects() {
+
+    const [taskForm , setTaskFrom] = useState(false)
+
+    const openTaskForm = () => {
+        setTaskFrom(true)   
+    }
+    
+    const closeTaskForm = () => {
+        setTaskFrom(false)   
+    }
+    
+
   return (
     <div className='project-main'>
         <div className='project-header'>
@@ -35,7 +49,7 @@ function Projects() {
                         <h2>{section.title}</h2>
                         <p>{section.totalTasks}</p>
                     </div>
-                    <button className='add-task-btn'>+</button>
+                    <button className='add-task-btn' onClick={openTaskForm}  >+</button>
                     <div className="task-list">
                         list tasks
                     </div>
@@ -45,7 +59,7 @@ function Projects() {
 
             }
         </div>
-      
+        {taskForm && <CreateTaskForm  onClose={closeTaskForm} />}
     </div>
   )
 }
