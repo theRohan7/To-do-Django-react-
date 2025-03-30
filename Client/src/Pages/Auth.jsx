@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../CSS/auth.css";
-import logo from "../assets/logo.png";
 import { AuthContext } from "../Contexts/AuthContext.jsx";
 
 function Auth() {
@@ -96,7 +95,7 @@ function Auth() {
   return (
     <div className="auth-main">
       <div className="logo">
-        <img src={logo} alt="logo" />
+        <img src='https://res.cloudinary.com/rohanscloud/image/upload/v1743342757/Logo_jethto.png' alt="logo" />
       </div>
       <div className="auth-form-container">
         <div className="auth-nav">
