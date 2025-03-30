@@ -45,6 +45,25 @@ class LoginView(APIView):
             "refresh": refresh_token
         }, status=status.HTTP_200_OK)
 
+
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        tasks = Task.objects.filter(owner=user)
+        task_serializer = TaskSerializer(tasks, many=True)
+        
+        return Response({
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "tasks": task_serializer.data
+            }
+        }, status=status.HTTP_200_OK)
+
+
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
