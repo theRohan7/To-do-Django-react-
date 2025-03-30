@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../CSS/auth.css";
 import logo from "../assets/logo.png";
-import { loginUser, registerUser } from "../Services/auth.service.js";
 import { AuthContext } from "../Contexts/AuthContext.jsx";
 
 function Auth() {
@@ -17,7 +16,7 @@ function Auth() {
   const [loading, setLoading] = useState(false);
 
 
-  const { setUserDetails } = useContext(AuthContext);
+  const { setUserDetails, loginUser, registerUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -78,14 +77,7 @@ function Auth() {
       let response;
 
       if(loginForm) {
-        response = await loginUser({email, password})
-        if(response.status === 200 ){
-           if(remember){
-             localStorage.setItem("token", response.data.access);
-           }
-           setUserDetails(response.data.user);
-          navigate("/");
-        }
+        response = await loginUser({email, password, remember})
       } else {
         response = await registerUser({username, email, password})
         if(response.status === 201){
@@ -162,7 +154,7 @@ function Auth() {
 
           {error && <p className="error-text">{error}</p>}
           <button type="submit" className="submit-btn">
-            {loginForm ? "Log In" : "Sign Up"}
+            {loading ? "Loading..." : loginForm ? "Log In" : "Sign Up"}
           </button>
 
           <div className="remember">
