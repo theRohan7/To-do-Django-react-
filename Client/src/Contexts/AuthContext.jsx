@@ -15,38 +15,33 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuthStatus = async () => {
-        setLoading(true);
-        try {
-          const token =
-            localStorage.getItem("token") || sessionStorage.getItem("token");
-  
-          if (!token) {
-            setIsAuthenticated(false);
+    const token = localStorage.getItem("user-token");
+        if(token){
+           fetchUserData(token)
+        } else {
             setLoading(false);
-            navigate("/auth");
-            return;
-          }
-  
-          const user = await getUserDetails(token);
-          if (user) {
-            setUserDetails(user);
-            setIsAuthenticated(true);
-          } else {
-            setIsAuthenticated(false);
-            navigate("/auth");
-          }
-        } catch (error) {
-          console.error("Error fetching user:", error);
-          setIsAuthenticated(false);
-          navigate("/auth");
-        } finally {
-          setLoading(false);
         }
-      };
-  
-      checkAuthStatus();
   }, []);
+
+
+  const fetchUserData = async (token) => {
+    try {
+      const user = await getUserDetails(token);
+      if (user) {
+        setUserDetails(user);
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      setIsAuthenticated(false);
+      logoutUser();
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
 
   const registerUser = async ({ username, email, password }) => {
@@ -72,12 +67,11 @@ export const AuthProvider = ({ children }) => {
         if (remember) {
           localStorage.setItem("token", response.data.access);
           localStorage.setItem("refreshToken", response.data.refresh);
+          await fetchUserData(response.data.access);
         } else {
           sessionStorage.setItem("token", response.data.access);
           sessionStorage.setItem("refreshToken", response.data.refresh);
         }
-        setUserDetails(response.data.user);
-        setIsAuthenticated(true);
         navigate("/");
         return true;
       }
@@ -101,7 +95,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        userDetails, isAuthenticated, setUserDetails, logoutUser, loginUser, registerUser,
+        userDetails, isAuthenticated, setUserDetails, logoutUser, loginUser, registerUser,fetchUserData
       }}
     >
       {children}

@@ -48,16 +48,15 @@ const navLinks = [
 
 function Home() {
   const [activeSection, setActiveSection] = useState(0);
-  const {  userDetails, logoutUser, isAuthenticated } = useContext(AuthContext);
+  const {  userDetails, logoutUser, fetchUserData } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const ActiveSectionComponent = navLinks[activeSection].component;
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/auth");
-    }
-  }, [isAuthenticated, navigate]);
+    const token = localStorage.getItem("token");
+    fetchUserData(token)
+  },[])
 
   const handleLogout = () => {
     logoutUser();
