@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../CSS/auth.css";
 import { AuthContext } from "../Contexts/AuthContext.jsx";
+import { Eye, EyeOff } from "lucide-react";
 
 function Auth() {
   const [loginForm, setLoginForm] = useState(true);
@@ -147,7 +148,7 @@ function Auth() {
               className="toggle-password"
               onClick={toggleShowPassword}
             >
-              {showPassword ? "Hide" : "Show"}
+              {showPassword ? <Eye color="#329C89" /> : <EyeOff color="#329C89" />}
             </button>
           </div>
 
