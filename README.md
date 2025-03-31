@@ -35,6 +35,7 @@ Django-based RESTful API for a To-Do application. It provides user authenticatio
   
 3. Install Dependencies
   ```
+  cd todo
   pip install -r requirements.txt
   ```
 
@@ -96,7 +97,7 @@ python manage.py test
 
 3. Start Server
   ```
-  nppm run dev
+  npm run dev
   ```
 
 ## Thank You!!
