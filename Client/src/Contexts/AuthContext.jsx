@@ -10,12 +10,11 @@ export const AuthProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("user-token");
+    const token = localStorage.getItem("token");
         if(token){
            fetchUserData(token)
         } else {
@@ -29,13 +28,9 @@ export const AuthProvider = ({ children }) => {
       const user = await getUserDetails(token);
       if (user) {
         setUserDetails(user);
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
+      } 
     } catch (error) {
       console.error("Error fetching user:", error);
-      setIsAuthenticated(false);
       logoutUser();
     } finally {
       setLoading(false);
@@ -66,16 +61,15 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         if (remember) {
           localStorage.setItem("token", response.data.access);
-          localStorage.setItem("refreshToken", response.data.refresh);
           await fetchUserData(response.data.access);
         } else {
           sessionStorage.setItem("token", response.data.access);
-          sessionStorage.setItem("refreshToken", response.data.refresh);
         }
         navigate("/");
         return true;
       }
     } catch (error) {
+      console.log(error);
       throw new Error(error.response.data.error);
     }
   };
@@ -84,7 +78,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
     setUserDetails(null);
-    setIsAuthenticated(false);
     navigate("/auth");
   };
 
@@ -95,7 +88,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        userDetails, isAuthenticated, setUserDetails, logoutUser, loginUser, registerUser,fetchUserData
+        userDetails, setUserDetails, logoutUser, loginUser, registerUser,fetchUserData
       }}
     >
       {children}

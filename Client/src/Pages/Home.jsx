@@ -50,12 +50,11 @@ const navLinks = [
 function Home() {
   const [activeSection, setActiveSection] = useState(0);
   const {  userDetails, logoutUser, fetchUserData } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const ActiveSectionComponent = navLinks[activeSection].component;
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     fetchUserData(token)
   },[])
 

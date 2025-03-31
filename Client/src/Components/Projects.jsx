@@ -2,12 +2,12 @@ import { ListFilterPlus } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import {
   DndContext,
-  closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
+  useDroppable,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -15,12 +15,31 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { restrictToParentElement } from "@dnd-kit/modifiers";
+import { rectIntersection } from '@dnd-kit/core';
 import "../CSS/Project.css";
 import CreateTaskForm from "./CreateTaskForm";
 import { TaskContext } from "../Contexts/TaskContext";
 import TaskCard from "./TaskCard";
 import TaskDetail from "./TaskDetail";
+
+
+const DroppableArea = ({ id, children }) => {
+  return (
+    <div 
+      id={id}
+      style={{ 
+        minHeight: '150px',
+        width: '100%',
+        padding: '8px',
+        backgroundColor: 'rgba(0, 0, 0, 0.02)',
+        borderRadius: '4px',
+      }}
+      data-droppable="true"
+    >
+      {children}
+    </div>
+  );
+};
 
 function Projects() {
   const { tasks, fetchTasks, setTasks } = useContext(TaskContext);
@@ -33,23 +52,12 @@ function Projects() {
     fetchTasks();
   }, [fetchTasks]);
 
-  const taskSections = [
-    {
-      title: "To Do",
-      status: "To Do",
-      tasks: tasks?.filter((task) => task.category === "To Do"),
-    },
-    {
-      title: "In Progress",
-      status: "In Progress",
-      tasks: tasks?.filter((task) => task.category === "In Progress"),
-    },
-    {
-      title: "Completed",
-      status: "Completed",
-      tasks: tasks?.filter((task) => task.category === "Completed"),
-    },
-  ];
+   const TASK_CATEGORIES = ['To Do', 'In Progress', 'Completed']
+
+   const categorizedTasks = TASK_CATEGORIES.map(category => ({
+    title: category,
+    tasks: tasks.filter(task => task.category === category) || []
+  }));
 
   const openTaskForm = (sectionStatus) => {
     setCurrentSection(sectionStatus);
@@ -69,94 +77,71 @@ function Projects() {
   };
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  const handleDragStart = (event) => {
-    const { active } = event;
-    setActiveId(active.id);
+  const findTaskById = (id) => {
+    const taskId = id.replace("task-", "");
+    return tasks.find(task => task.id == taskId);
   };
+
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+  };
+
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
+    
     if (!over) return;
 
-    console.log("Drag ended:", event);
-    console.log("Over ID:", over.id);
-
-    const activeId = active.id.replace("task-", "");
-
-    const taskToMove = tasks.find((task) => task.id == activeId);
-    if (!taskToMove) return;
+    const activeTaskId = active.id.replace("task-", "");
+    const taskToMove = tasks.find(task => task.id == activeTaskId);
+    
+    if (!taskToMove) return
 
     let newCategory = taskToMove.category;
 
     if (over.id.startsWith("task-")) {
-      // Dropped on another task - find that task's category
-      const overTaskId = over.id.replace("task-", "");
-      const overTask = tasks.find((task) => task.id == overTaskId);
-
+      const overTask = findTaskById(over.id);
       if (overTask) {
         newCategory = overTask.category;
       }
-    } else {
-      // This might be a section list or other element
-      // Check if it's one of our sections by ID
-      const sectionMatch = taskSections.find(
-        (section) => section.status === over.id
-      );
-      if (sectionMatch) {
-        newCategory = sectionMatch.status;
-      } else if (over.id.startsWith("list-")) {
-        // If it's a list container with our custom ID format
-        const listCategory = over.id.replace("list-", "");
-        const sectionMatch = taskSections.find(
-          (section) => section.status === listCategory
-        );
-        if (sectionMatch) {
-          newCategory = sectionMatch.status;
-        }
-      }
+    } else if (over.id.startsWith("list-")) {
+      newCategory = over.id.replace("list-", "");
+    } else if (over.id.startsWith("empty-")) {
+      newCategory = over.id.replace("empty-", "");
+    } else if (TASK_CATEGORIES.includes(over.id)) {
+
+      newCategory = over.id;
     }
 
-    // Update the task category if changed
     if (newCategory !== taskToMove.category) {
-      console.log(`Moving task from ${taskToMove.category} to ${newCategory}`);
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id == activeId ? { ...task, category: newCategory } : task
-        )
+      const updatedTasks = tasks.map(task => 
+        task.id == activeTaskId ? { ...task, category: newCategory } : task
       );
+      
+      setTasks(updatedTasks);
     }
-    // Reorder within the same category
-    else if (over.id.startsWith("task-")) {
+    else if (over.id.startsWith("task-") && over.id !== active.id) {
       const overId = over.id.replace("task-", "");
       const updatedTasks = [...tasks];
-      const fromIndex = updatedTasks.findIndex((task) => task.id == activeId);
-      const toIndex = updatedTasks.findIndex((task) => task.id == overId);
+      const fromIndex = updatedTasks.findIndex(task => task.id == activeTaskId);
+      const toIndex = updatedTasks.findIndex(task => task.id == overId);
 
       if (fromIndex !== -1 && toIndex !== -1) {
         setTasks(arrayMove(updatedTasks, fromIndex, toIndex));
       }
     }
-  };
 
-  const findContainer = (id) => {
-    if (id.startsWith("list-")) {
-      return id.replace("list-", "");
-    }
-
-    if (id.startsWith("task-")) {
-      const taskId = id.replace("task-", "");
-      const task = tasks.find((t) => t.id == taskId);
-      return task ? task.category : null;
-    }
-
-    const section = taskSections.find((s) => s.status === id);
-    return section ? section.status : null;
+    setActiveId(null);
   };
 
   return (
@@ -169,17 +154,16 @@ function Projects() {
       </div>
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={rectIntersection}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        modifiers={[restrictToParentElement]}
       >
         <div className="tasks-section">
-          {taskSections.map((section, idx) => (
+          {categorizedTasks.map((section, index) => (
             <div
-              key={idx}
+              key={index}
               className="task-section"
-              id={section.status}
+              id={section.title}
               data-droppable="true"
             >
               <div className="section-header">
@@ -188,32 +172,64 @@ function Projects() {
               </div>
               <button
                 className="add-task-btn"
-                onClick={() => openTaskForm(section.status)}
+                onClick={() => openTaskForm(section.title)}
               >
                 +
               </button>
-              <SortableContext
-                items={section.tasks?.map((task) => `task-${task.id}`) || []}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="task-list">
-                  {section.tasks?.map((taskinfo) => (
-                    <TaskCard
-                      key={taskinfo.id}
-                      taskinfo={taskinfo}
-                      id={`task-${taskinfo.id}`}
-                      onOpenDetail={openTaskDetail}
-                    />
-                  ))}
-                  {section.tasks?.length === 0 && (
-                    <p className="empty-list">No tasks</p>
-                  )}
-                </div>
-              </SortableContext>
+              
+              {section.tasks.length > 0 ? (
+                <SortableContext
+                  items={section.tasks.map(task => `task-${task.id}`)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div 
+                    className="task-list" 
+                    id={`list-${section.title}`}
+                    style={{ 
+                      minHeight: '100px',
+                      padding: '8px'
+                    }}
+                  >
+                    {section.tasks.map(taskinfo => (
+                      <TaskCard
+                        key={taskinfo.id}
+                        taskinfo={taskinfo}
+                        id={`task-${taskinfo.id}`}
+                        onOpenDetail={openTaskDetail}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              ) : (
+                <Droppable id={`empty-${section.title}`}>
+                  <DroppableArea id={`empty-${section.title}`}>
+                    <p className="empty-list" style={{ 
+                      textAlign: 'center', 
+                      color: '#888',
+                      paddingTop: '40px'
+                    }}>
+                      No tasks - Drop here
+                    </p>
+                  </DroppableArea>
+                </Droppable>
+              )}
             </div>
           ))}
         </div>
+        
+        {activeId && (
+          <DragOverlay>
+            {tasks.find(task => `task-${task.id}` === activeId) && (
+              <div className="task-card task-card-dragging">
+                <div className="task-card-header">
+                  <h3>{tasks.find(task => `task-${task.id}` === activeId).title}</h3>
+                </div>
+              </div>
+            )}
+          </DragOverlay>
+        )}
       </DndContext>
+      
       {taskForm && (
         <CreateTaskForm
           onClose={closeTaskForm}
@@ -229,5 +245,18 @@ function Projects() {
     </div>
   );
 }
+
+
+const Droppable = ({ id, children }) => {
+  const { setNodeRef } = useDroppable({
+    id: id
+  });
+  
+  return (
+    <div ref={setNodeRef}>
+      {children}
+    </div>
+  );
+};
 
 export default Projects;
