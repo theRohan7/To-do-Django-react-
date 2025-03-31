@@ -29,9 +29,9 @@ const DroppableArea = ({ id, children }) => {
     <div 
       id={id}
       style={{ 
-        minHeight: '100%',
-        width: '100%',
-        backgroundColor: 'rgba(142, 13, 13, 0.02)',
+        height: '22rem',
+        width: '12rem',
+        backgroundColor: 'rgba(237, 15, 15, 0.02)',
         borderRadius: '4px',
       }}
       data-droppable="true"
@@ -220,7 +220,7 @@ function Projects() {
                       color: '#888',
                       paddingTop: '40px',
                       width: '100%',
-                      height: '100%'
+                      height: '100%',
                     }}>
                       No tasks - Drop here
                     </p>
