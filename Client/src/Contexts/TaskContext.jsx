@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback } from "react";
-import { fetchAllTasks } from "../Services/task.service";
+import { chnageTaskCategory, fetchAllTasks } from "../Services/task.service";
 
 export const TaskContext = createContext();
 
@@ -17,7 +17,7 @@ export const TaskProvider = ({ children }) => {
   }, []);
 
   const updateDeleteTask = useCallback((taskId) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId && task.id !== taskId));
   }, []);
 
   const updateTaskCreated = useCallback((newTask) => {
@@ -26,21 +26,35 @@ export const TaskProvider = ({ children }) => {
 
   const updateEditedTask = useCallback((updatedTask) => {
     setTasks((prevTasks) => {
-      return prevTasks.map((task) => 
-        task._id === updatedTask._id ? updatedTask : task
+      return prevTasks.map((task) =>
+        (task._id === updatedTask._id || task.id === updatedTask.id) ? updatedTask : task
       );
     });
   }, []);
 
 
-  const updateTaskCategory = useCallback((taskId, newCategory) => {    
-    setTasks(prevTasks => 
-        prevTasks.map(task => 
-          task.id === taskId 
-            ? { ...task, category: newCategory } 
+  const updateTaskCategory = useCallback(async(taskId, newCategory) => {    
+    try {
+      const taskToUpdate = tasks.find(task => task._id == taskId || task.id == taskId);
+      
+      if (!taskToUpdate) {
+        console.error("Task not found:", taskId);
+        return;
+      }
+
+      await chnageTaskCategory(taskId, newCategory);
+
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          (task._id == taskId || task.id == taskId)
+            ? { ...task, category: newCategory }
             : task
-        ))
-  }, []);
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update task category:", error);
+    }
+  }, [tasks]);
 
 
 

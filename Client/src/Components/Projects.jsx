@@ -21,7 +21,7 @@ import CreateTaskForm from "./CreateTaskForm";
 import { TaskContext } from "../Contexts/TaskContext";
 import TaskCard from "./TaskCard";
 import TaskDetail from "./TaskDetail";
-import { chnageTaskCategory } from "../Services/task.service";
+
 
 
 const DroppableArea = ({ id, children }) => {
@@ -43,14 +43,14 @@ const DroppableArea = ({ id, children }) => {
 
 function Projects() {
   const { tasks, fetchTasks, setTasks, updateTaskCategory } = useContext(TaskContext);
-  const [taskForm, setTaskFrom] = useState(false);
+  const [taskForm, setTaskForm] = useState(false);
   const [currentSection, setCurrentSection] = useState("");
   const [activeId, setActiveId] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
     fetchTasks();
-  }, [,tasks]);
+  }, [fetchTasks]);
 
    const TASK_CATEGORIES = ['To Do', 'In Progress', 'Completed']
 
@@ -61,11 +61,11 @@ function Projects() {
 
   const openTaskForm = (sectionStatus) => {
     setCurrentSection(sectionStatus);
-    setTaskFrom(true);
+    setTaskForm(true);
   };
 
   const closeTaskForm = () => {
-    setTaskFrom(false);
+    setTaskForm(false);
   };
 
   const openTaskDetail = (task) => {
@@ -97,16 +97,18 @@ function Projects() {
   };
 
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = async(event) => {
     const { active, over } = event;
     
     if (!over) return;
 
-    const activeTaskId = active.id.replace("task-", "");
-    const taskToMove = tasks.find(task => task.id == activeTaskId);
-    
-    if (!taskToMove) return
+    try {
+      const activeTaskId = active.id.replace("task-", "");
+      const taskToMove = tasks.find(task => task.id == activeTaskId);
 
+      if (!taskToMove) return
+
+      
     let newCategory = taskToMove.category;
 
     if (over.id.startsWith("task-")) {
@@ -125,8 +127,15 @@ function Projects() {
 
     if (newCategory !== taskToMove.category) {
 
-      updateTaskCategory(activeTaskId, newCategory)
-      chnageTaskCategory(activeTaskId, newCategory)
+      await updateTaskCategory(activeTaskId, newCategory)
+
+      setTasks(prevTasks => 
+        prevTasks.map(task =>
+          (task._id == activeTaskId || task.id == activeTaskId)
+            ? { ...task, category: newCategory }
+            : task
+        )
+      );
     }
     else if (over.id.startsWith("task-") && over.id !== active.id) {
       const overId = over.id.replace("task-", "");
@@ -138,8 +147,13 @@ function Projects() {
         setTasks(arrayMove(updatedTasks, fromIndex, toIndex));
       }
     }
+      
+    } catch (error) {
+      console.error("Error during drag operation:", error);
+    } finally {
+      setActiveId(null);
 
-    setActiveId(null);
+    }
   };
 
   return (
@@ -220,9 +234,15 @@ function Projects() {
         {activeId && (
           <DragOverlay>
             {tasks.find(task => `task-${task.id}` === activeId) && (
-              <div className="task-card task-card-dragging">
-                <div className="task-card-header">
+              <div className="task-card">
+                <div className="card-header">
                   <h3>{tasks.find(task => `task-${task.id}` === activeId).title}</h3>
+                </div>
+                <div className="card-body">
+                  <p>{tasks.find(task => `task-${task.id}` === activeId).description}</p>
+                </div>
+                <div className="card-footer">
+                  <p>{tasks.find(task => `task-${task.id}` === activeId).owner.username}</p>
                 </div>
               </div>
             )}
