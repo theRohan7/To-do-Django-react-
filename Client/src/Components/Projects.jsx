@@ -21,6 +21,7 @@ import CreateTaskForm from "./CreateTaskForm";
 import { TaskContext } from "../Contexts/TaskContext";
 import TaskCard from "./TaskCard";
 import TaskDetail from "./TaskDetail";
+import { chnageTaskCategory } from "../Services/task.service";
 
 
 const DroppableArea = ({ id, children }) => {
@@ -28,10 +29,9 @@ const DroppableArea = ({ id, children }) => {
     <div 
       id={id}
       style={{ 
-        minHeight: '150px',
+        minHeight: '100%',
         width: '100%',
-        padding: '8px',
-        backgroundColor: 'rgba(0, 0, 0, 0.02)',
+        backgroundColor: 'rgba(142, 13, 13, 0.02)',
         borderRadius: '4px',
       }}
       data-droppable="true"
@@ -42,7 +42,7 @@ const DroppableArea = ({ id, children }) => {
 };
 
 function Projects() {
-  const { tasks, fetchTasks, setTasks } = useContext(TaskContext);
+  const { tasks, fetchTasks, setTasks, updateTaskCategory } = useContext(TaskContext);
   const [taskForm, setTaskFrom] = useState(false);
   const [currentSection, setCurrentSection] = useState("");
   const [activeId, setActiveId] = useState(null);
@@ -50,7 +50,7 @@ function Projects() {
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+  }, [,tasks]);
 
    const TASK_CATEGORIES = ['To Do', 'In Progress', 'Completed']
 
@@ -124,11 +124,9 @@ function Projects() {
     }
 
     if (newCategory !== taskToMove.category) {
-      const updatedTasks = tasks.map(task => 
-        task.id == activeTaskId ? { ...task, category: newCategory } : task
-      );
-      
-      setTasks(updatedTasks);
+
+      updateTaskCategory(activeTaskId, newCategory)
+      chnageTaskCategory(activeTaskId, newCategory)
     }
     else if (over.id.startsWith("task-") && over.id !== active.id) {
       const overId = over.id.replace("task-", "");
@@ -206,7 +204,9 @@ function Projects() {
                     <p className="empty-list" style={{ 
                       textAlign: 'center', 
                       color: '#888',
-                      paddingTop: '40px'
+                      paddingTop: '40px',
+                      width: '100%',
+                      height: '100%'
                     }}>
                       No tasks - Drop here
                     </p>

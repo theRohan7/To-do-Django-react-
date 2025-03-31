@@ -32,8 +32,7 @@ const updateTask = async (id, taskDetails) => {
             headers: {
                 Authorization: token,
             }
-        })
-        console.log(response);  
+        }) 
         return response.data;
     } catch (error) {
         throw new Error(error.response.data.error);
@@ -47,8 +46,7 @@ const deleteTask = async (id) => {
             headers: {
                 Authorization: token,
             }
-        })
-        console.log(response);  
+        }) 
         return response.data;
     } catch (error) {
         throw new Error(error.response.data.error);
@@ -76,9 +74,7 @@ const fetchTaskDetails = async (id) => {
             headers: {
                 Authorization: token,
             }
-        })
-        console.log(response);
-        
+        })        
         return response.data;
     } catch (error) {
         throw new Error(error.response.data.error);
@@ -95,8 +91,7 @@ const chnageTaskCategory = async (id, category) => {
             headers: {
                 Authorization: token,
             }
-        })
-        console.log(response);  
+        })       
         return response.data;
     } catch (error) {
         throw new Error(error.response.data.error);

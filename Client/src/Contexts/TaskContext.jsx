@@ -33,7 +33,7 @@ export const TaskProvider = ({ children }) => {
   }, []);
 
 
-  const updateTaskCategory = useCallback((taskId, newCategory) => {
+  const updateTaskCategory = useCallback((taskId, newCategory) => {    
     setTasks(prevTasks => 
         prevTasks.map(task => 
           task.id === taskId 
