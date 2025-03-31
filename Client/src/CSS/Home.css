@@ -113,3 +113,26 @@
     width: 2.5rem;
     border-radius: 50%;
 }
+
+
+.overview-container, .chat-container, .calendar-container,  .settings-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    padding-top: 5rem;
+    font-family: poppins;
+}
+
+.stats-container{
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    padding-top: 5rem;
+    font-family: poppins;
+}

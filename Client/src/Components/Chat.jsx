@@ -2,8 +2,10 @@ import React from 'react'
 
 function Chat() {
   return (
-    <div>
-      <h1>Chat</h1>
+    <div className="chat-container">
+      <h2>Chat</h2>
+      <p>Coming soon...</p>
+      <h4>Switch to Projects Section for To DO</h4>
     </div>
   )
 }
