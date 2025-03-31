@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         if(token){
            fetchUserData(token)
         } else {
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
       });
       return response;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response.data.username[0]);
     }
   };
 
